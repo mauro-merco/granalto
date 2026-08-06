@@ -1987,6 +1987,20 @@ button {
   .header-cta .btn {
     display: none;
   }
+  .header-inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header-logo {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .header-cta {
+    margin-left: auto;
+  }
   .burger {
     display: flex;
   }
