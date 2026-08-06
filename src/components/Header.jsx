@@ -65,6 +65,9 @@ export default function Header({ onCta }) {
       </div>
 
       <div className={`mobile-menu${open ? " is-open" : ""}`}>
+        <button className="menu-close" onClick={() => setOpen(false)} aria-label="Cerrar menú">
+          ✕
+        </button>
         {NAV_LINKS.map((l, i) => (
           <a key={l.href} href={l.href} onClick={(e) => go(e, l.href)} style={{ transitionDelay: `${i * 60}ms` }}>
             {l.label}
