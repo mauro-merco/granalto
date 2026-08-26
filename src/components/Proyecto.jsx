@@ -1,4 +1,4 @@
-import { Eyebrow, Reveal, LineReveal, ProjectImage } from "./ui";
+import { Eyebrow, Reveal, LineReveal } from "./ui";
 import { projectImages } from "../lib/images";
 
 export default function Proyecto() {
@@ -8,11 +8,10 @@ export default function Proyecto() {
         <div className="proyecto-grid">
           <Reveal variant="left" className="proyecto-visual">
             <div className="img-main">
-              <ProjectImage
-                slotId="proyecto-corte-edificio"
-                alt="Corte vertical del edificio Gran Alto mostrando sus niveles"
-                aspectRatio="4:5"
-                imgStyle={{ objectFit: "contain" }}
+              <img
+                src={projectImages.fachadaFrontal}
+                alt="Fachada frontal de Gran Alto"
+                style={{ objectFit: "cover", objectPosition: "center top" }}
               />
             </div>
           </Reveal>
@@ -59,18 +58,8 @@ export default function Proyecto() {
           </div>
         </div>
 
-        {/* Galería editorial: Fachadas y Lobby */}
         <div className="proyecto-gallery">
           <Reveal variant="scale" delay={0} className="proyecto-gallery-item proyecto-gallery-item--tall">
-            <img
-              src={projectImages.fachadaFrontal}
-              alt="Fachada frontal del edificio Gran Alto en Las Mercedes"
-              loading="lazy"
-              style={{ objectFit: "cover" }}
-            />
-            <div className="proyecto-gallery-caption">Fachada frontal</div>
-          </Reveal>
-          <Reveal variant="scale" delay={80} className="proyecto-gallery-item">
             <img
               src={projectImages.fachadaLateral}
               alt="Acceso y fachada lateral de Gran Alto"
@@ -79,7 +68,7 @@ export default function Proyecto() {
             />
             <div className="proyecto-gallery-caption">Acceso principal</div>
           </Reveal>
-          <Reveal variant="scale" delay={160} className="proyecto-gallery-item">
+          <Reveal variant="scale" delay={80} className="proyecto-gallery-item">
             <img
               src={projectImages.lobby}
               alt="Lobby de acceso de Gran Alto"

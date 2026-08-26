@@ -1,10 +1,11 @@
-import { Eyebrow, Reveal, ProjectImage } from "./ui";
+import { Eyebrow, Reveal } from "./ui";
+import { projectImages } from "../lib/images";
 
 const RENDERS = [
-  { slotId: "tipologia-a-render", label: "Interior · Tipología A" },
-  { slotId: "tipologia-b-render", label: "Interior · Tipología B" },
-  { slotId: "tipologia-c-render", label: "Interior · Tipología C · Vista 1" },
-  { slotId: "tipologia-c-render-secundario", label: "Interior · Tipología C · Vista 2" },
+  { src: projectImages.dptoA, label: "Interior · Tipología A" },
+  { src: projectImages.dptoB, label: "Interior · Tipología B" },
+  { src: projectImages.dptoC01, label: "Interior · Tipología C · Vista 1" },
+  { src: projectImages.dptoC02, label: "Interior · Tipología C · Vista 2" },
 ];
 
 export default function Interiores() {
@@ -24,11 +25,12 @@ export default function Interiores() {
 
         <div className="interiores-grid">
           {RENDERS.map((r, i) => (
-            <Reveal key={r.slotId} variant="scale" delay={i * 80} className="int-card">
-              <ProjectImage
-                slotId={r.slotId}
+            <Reveal key={r.label} variant="scale" delay={i * 80} className="int-card">
+              <img
+                src={r.src}
                 alt={r.label}
-                aspectRatio="16:9"
+                loading="lazy"
+                style={{ objectFit: "cover", objectPosition: "center" }}
               />
               <span className="int-label">{r.label}</span>
             </Reveal>

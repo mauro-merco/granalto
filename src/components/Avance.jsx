@@ -1,5 +1,5 @@
 import { projectConfig } from "../lib/config";
-import { Eyebrow, Reveal, LineReveal, ProjectImage } from "./ui";
+import { Eyebrow, Reveal, LineReveal } from "./ui";
 
 export default function Avance() {
   const progress = projectConfig.projectProgress;

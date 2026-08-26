@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import { resolveImage } from "../lib/images";
 
 export function Eyebrow({ children }) {
   return <p className="eyebrow">{children}</p>;
@@ -74,55 +73,6 @@ export function LineReveal({ children, as: Tag = "div", className = "", style, .
   );
 }
 
-export function ProjectImage({
-  slotId,
-  alt,
-  aspectRatio,
-  objectPosition = "center",
-  priority = false,
-  className = "",
-  style,
-  imgStyle,
-}) {
-  const result = resolveImage(slotId);
-
-  if (result.isPlaceholder) {
-    const meta = result.meta || { desc: "Imagen del proyecto", aspect: "16:9" };
-    return (
-      <div
-        className={`project-image-placeholder ${className}`}
-        style={style}
-        data-image-slot={slotId}
-        role="img"
-        aria-label={alt || meta.desc}
-      >
-        <span className="placeholder-icon" aria-hidden="true">📷</span>
-        <span className="placeholder-label">IMAGEN PENDIENTE</span>
-        <span className="placeholder-name">{slotId}</span>
-        <span className="placeholder-desc">{meta.desc}</span>
-        <span className="placeholder-aspect">Formato: {aspectRatio || meta.aspect}</span>
-      </div>
-    );
-  }
-
-  return (
-    <img
-      src={result.src}
-      alt={alt}
-      loading={priority ? "eager" : "lazy"}
-      fetchPriority={priority ? "high" : undefined}
-      style={{
-        objectPosition,
-        width: "100%",
-        height: "100%",
-        objectFit: "cover",
-        ...imgStyle,
-      }}
-      className={className}
-    />
-  );
-}
-
 export function WhatsAppIcon({ size = 28 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
@@ -163,10 +113,12 @@ export function ImageModal({ src, alt, isOpen, onClose }) {
     };
   }, [isOpen, handleKeyDown]);
 
+  if (!isOpen || !src) return null;
+
   return (
     <div
       ref={overlayRef}
-      className={`modal-overlay${isOpen ? " is-open" : ""}`}
+      className="modal-overlay is-open"
       onClick={(e) => {
         if (e.target === overlayRef.current) onClose();
       }}
@@ -178,13 +130,7 @@ export function ImageModal({ src, alt, isOpen, onClose }) {
         <button className="modal-close" onClick={onClose} aria-label="Cerrar">
           ✕
         </button>
-        {src ? (
-          <img src={src} alt={alt} style={{ maxWidth: "90vw", maxHeight: "85vh", objectFit: "contain" }} />
-        ) : (
-          <div style={{ width: "70vw", height: "60vh" }}>
-            <ProjectImage slotId="placeholder" alt="Placeholder" />
-          </div>
-        )}
+        <img src={src} alt={alt} style={{ maxWidth: "90vw", maxHeight: "85vh", objectFit: "contain" }} />
       </div>
     </div>
   );

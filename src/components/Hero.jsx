@@ -1,7 +1,8 @@
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { prefersReducedMotion } from "../lib/anim";
-import { ProjectImage, ArrowIcon } from "./ui";
+import { projectImages } from "../lib/images";
+import { ArrowIcon } from "./ui";
 
 export default function Hero({ onCta }) {
   const ref = useRef(null);
@@ -25,12 +26,11 @@ export default function Hero({ onCta }) {
   return (
     <section id="inicio" className="hero" ref={ref}>
       <div className="hero-bg">
-        <ProjectImage
-          slotId="hero-edificio-gran-alto"
+        <img
+          src={projectImages.hero}
           alt="Vista aérea o fachada del edificio Gran Alto en Las Mercedes"
-          priority
-          objectPosition="center 55%"
-          imgStyle={{ objectFit: "cover", objectPosition: "center 55%" }}
+          fetchPriority="high"
+          style={{ objectFit: "cover", objectPosition: "center 55%" }}
         />
       </div>
       <div className="hero-veil" />

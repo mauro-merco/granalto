@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { prefersReducedMotion } from "../lib/anim";
-import { Eyebrow, Reveal, ProjectImage, ArrowIcon, ImageModal } from "./ui";
+import { projectImages } from "../lib/images";
+import { Eyebrow, Reveal, ArrowIcon } from "./ui";
 
 const TIPOS = [
   {
@@ -15,8 +16,7 @@ const TIPOS = [
       { b: "107", u: "m²" },
     ],
     config: "1 dormitorio en suite y 1 dormitorio con baño compartido.",
-    planoSlot: "tipologia-a-plano",
-    renderSlot: "tipologia-a-render",
+    img: projectImages.dptoA,
     ctaText: "Consultar disponibilidad de la Tipología A",
   },
   {
@@ -30,8 +30,7 @@ const TIPOS = [
       { b: "93", u: "m²" },
     ],
     config: "1 dormitorio en suite y 1 dormitorio con baño compartido.",
-    planoSlot: "tipologia-b-plano",
-    renderSlot: "tipologia-b-render",
+    img: projectImages.dptoB,
     ctaText: "Consultar disponibilidad de la Tipología B",
   },
   {
@@ -45,8 +44,8 @@ const TIPOS = [
       { b: "90", u: "m²" },
     ],
     config: "1 dormitorio en suite y 1 dormitorio con baño compartido.",
-    planoSlot: "tipologia-c-plano",
-    renderSlot: "tipologia-c-render",
+    img: projectImages.dptoC01,
+    img2: projectImages.dptoC02,
     ctaText: "Consultar disponibilidad de la Tipología C",
   },
 ];
@@ -54,8 +53,6 @@ const TIPOS = [
 export default function Tipologias({ onCta }) {
   const [active, setActive] = useState(0);
   const panelRef = useRef(null);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalSlot, setModalSlot] = useState("");
 
   useEffect(() => {
     if (prefersReducedMotion()) return;
@@ -74,12 +71,6 @@ export default function Tipologias({ onCta }) {
   };
 
   const tipo = TIPOS[active];
-
-  const openModal = (slotId) => {
-    setModalSlot(slotId);
-    setModalOpen(true);
-    window.trackEvent?.({ event: "open_plano_tipologia" });
-  };
 
   return (
     <section id="tipologias" className="section tipologias">
@@ -120,12 +111,13 @@ export default function Tipologias({ onCta }) {
         >
           <div className="tipo-panel">
             <Reveal variant="left" className="tipo-img">
-              <ProjectImage
-                slotId={tipo.renderSlot}
-                alt={`Interior de la ${tipo.name}`}
-                aspectRatio="16:9"
-                imgStyle={{ objectFit: "cover" }}
-              />
+              <div className="media-frame">
+                <img
+                  src={tipo.img}
+                  alt={`Interior de la ${tipo.name}`}
+                  style={{ objectFit: "cover", objectPosition: "center" }}
+                />
+              </div>
               <span className="tipo-badge">{tipo.name}</span>
             </Reveal>
 
@@ -146,22 +138,17 @@ export default function Tipologias({ onCta }) {
 
               <p className="tipo-config">{tipo.config}</p>
 
-              <div
-                className="planta-img-wrap"
-                style={{ cursor: "pointer", marginTop: "0.5rem" }}
-                onClick={() => openModal(tipo.planoSlot)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => e.key === "Enter" && openModal(tipo.planoSlot)}
-                aria-label={`Ampliar plano de la ${tipo.name}`}
-              >
-                <ProjectImage
-                  slotId={tipo.planoSlot}
-                  alt={`Plano de la ${tipo.name}`}
-                  aspectRatio="Horizontal"
-                  imgStyle={{ objectFit: "contain", height: "280px" }}
-                />
-              </div>
+              {tipo.img2 && (
+                <div className="tipo-second-img">
+                  <div className="media-frame">
+                    <img
+                      src={tipo.img2}
+                      alt={`Segunda vista de la ${tipo.name}`}
+                      style={{ objectFit: "cover", objectPosition: "center" }}
+                    />
+                  </div>
+                </div>
+              )}
 
               <div className="tipo-cta-row">
                 <button
@@ -178,15 +165,6 @@ export default function Tipologias({ onCta }) {
           </div>
         </div>
       </div>
-
-      {modalOpen && (
-        <ImageModal
-          src={null}
-          isOpen={modalOpen}
-          onClose={() => setModalOpen(false)}
-          alt={`Plano ampliado de ${tipo.name}`}
-        />
-      )}
     </section>
   );
 }

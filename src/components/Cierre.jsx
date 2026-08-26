@@ -14,7 +14,7 @@ export default function Cierre({ onCta }) {
               src={projectImages.fachadaLateral}
               alt="Acceso y fachada lateral de Gran Alto"
               loading="lazy"
-              style={{ objectFit: "cover" }}
+              style={{ objectFit: "cover", objectPosition: "center" }}
             />
           </div>
 

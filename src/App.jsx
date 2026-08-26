@@ -4,7 +4,6 @@ import Hero from "./components/Hero";
 import Marquee from "./components/Marquee";
 import Proyecto from "./components/Proyecto";
 import Tipologias from "./components/Tipologias";
-import PlantaGeneral from "./components/PlantaGeneral";
 import Amenities from "./components/Amenities";
 import Interiores from "./components/Interiores";
 import Ubicacion from "./components/Ubicacion";
@@ -106,7 +105,6 @@ export default function App() {
         <Marquee />
         <Proyecto />
         <Tipologias onCta={(p) => handleCta({ ...p, location: "tipologias" })} />
-        <PlantaGeneral />
         <Amenities />
         <Interiores />
         <Ubicacion />
