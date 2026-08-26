@@ -1,55 +1,61 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { IMG } from "../lib/images";
 import { prefersReducedMotion } from "../lib/anim";
-import { SITE } from "../lib/config";
-import { Eyebrow, Reveal, ArrowIcon, WhatsAppIcon } from "./ui";
+import { Eyebrow, Reveal, ProjectImage, ArrowIcon, ImageModal } from "./ui";
 
 const TIPOS = [
   {
-    id: "un-dorm",
-    tab: "1 dormitorio",
-    name: "Compacta",
-    tagline: "para tu primer gran paso",
-    img: IMG.interiorBed,
+    id: "tipologia-a",
+    tab: "Tipología A",
+    name: "Tipología A",
+    surface: "107 m²",
     specs: [
-      { b: "65", u: "m²" },
-      { b: "1", u: "habitación" },
-      { b: "1", u: "baño" },
-    ],
-    extras: ["Cochera opcional", "Ascensor", "Acceso a amenities"],
-  },
-  {
-    id: "dos-dorm",
-    tab: "2 dormitorios",
-    name: "Familiar",
-    tagline: "amplitud para crecer",
-    img: IMG.interiorLiving,
-    specs: [
+      { b: "2", u: "dormitorios" },
+      { b: "2", u: "baños" },
       { b: "107", u: "m²" },
-      { b: "2", u: "habitaciones" },
-      { b: "2", u: "baños" },
     ],
-    extras: ["Cochera", "Ascensor", "Acceso a amenities", "Balcón"],
+    config: "1 dormitorio en suite y 1 dormitorio con baño compartido.",
+    planoSlot: "tipologia-a-plano",
+    renderSlot: "tipologia-a-render",
+    ctaText: "Consultar disponibilidad de la Tipología A",
   },
   {
-    id: "tres-dorm",
-    tab: "3 dormitorios",
-    name: "Amplia",
-    tagline: "espacio para toda la familia",
-    img: IMG.interiorLiving2,
+    id: "tipologia-b",
+    tab: "Tipología B",
+    name: "Tipología B",
+    surface: "93 m²",
     specs: [
-      { b: "130", u: "m²" },
-      { b: "3", u: "habitaciones" },
+      { b: "2", u: "dormitorios" },
       { b: "2", u: "baños" },
+      { b: "93", u: "m²" },
     ],
-    extras: ["Cochera doble", "Ascensor", "Acceso a amenities", "Terraza"],
+    config: "1 dormitorio en suite y 1 dormitorio con baño compartido.",
+    planoSlot: "tipologia-b-plano",
+    renderSlot: "tipologia-b-render",
+    ctaText: "Consultar disponibilidad de la Tipología B",
+  },
+  {
+    id: "tipologia-c",
+    tab: "Tipología C",
+    name: "Tipología C",
+    surface: "90 m²",
+    specs: [
+      { b: "2", u: "dormitorios" },
+      { b: "2", u: "baños" },
+      { b: "90", u: "m²" },
+    ],
+    config: "1 dormitorio en suite y 1 dormitorio con baño compartido.",
+    planoSlot: "tipologia-c-plano",
+    renderSlot: "tipologia-c-render",
+    ctaText: "Consultar disponibilidad de la Tipología C",
   },
 ];
 
 export default function Tipologias({ onCta }) {
-  const [active, setActive] = useState(1);
+  const [active, setActive] = useState(0);
   const panelRef = useRef(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalSlot, setModalSlot] = useState("");
 
   useEffect(() => {
     if (prefersReducedMotion()) return;
@@ -57,60 +63,75 @@ export default function Tipologias({ onCta }) {
     if (!el) return;
     gsap.fromTo(
       el,
-      { opacity: 0, y: 28, filter: "blur(8px)" },
-      { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.7, ease: "power3.out" }
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }
     );
   }, [active]);
 
   const select = (i) => {
     setActive(i);
+    window.trackEvent?.({ event: `select_tipologia_${["a", "b", "c"][i]}` });
   };
 
   const tipo = TIPOS[active];
-  const waText = `Hola, quiero recibir información sobre la tipología ${tipo.name} de Gran Alto Las Mercedes.`;
+
+  const openModal = (slotId) => {
+    setModalSlot(slotId);
+    setModalOpen(true);
+    window.trackEvent?.({ event: "open_plano_tipologia" });
+  };
 
   return (
-    <section id="departamentos" className="section tipologias">
-      <span className="orb orb-blue" style={{ width: "40vw", height: "40vw", top: "-10%", right: "-12%" }} />
-      <span className="orb orb-sand" style={{ width: "32vw", height: "32vw", bottom: "-8%", left: "-10%" }} />
-
-      <div className="container" style={{ position: "relative", zIndex: 2 }}>
-        <Reveal className="sec-head" style={{ maxWidth: "760px" }}>
-          <Eyebrow>Encontrá tu espacio</Eyebrow>
-          <h2 className="display" style={{ marginTop: "1.1rem" }}>
-            Departamentos para <span className="serif-i">distintas formas</span> de vivir
+    <section id="tipologias" className="section tipologias">
+      <div className="container">
+        <Reveal className="sec-head" style={{ maxWidth: "720px" }}>
+          <Eyebrow>Tipologías</Eyebrow>
+          <h2 className="display" style={{ marginTop: "1rem" }}>
+            Tres tipologías. <span className="serif-i">Una misma forma</span> de vivir mejor.
           </h2>
+          <p className="lead" style={{ marginTop: "1rem" }}>
+            Departamentos de 2 dormitorios con distribuciones pensadas para
+            aprovechar cada espacio y acompañar distintos modos de vivir.
+          </p>
         </Reveal>
 
-        <Reveal className="tipo-tabs" variant="scale">
+        <div className="tipo-tabs" role="tablist" aria-label="Seleccionar tipología">
           {TIPOS.map((t, i) => (
             <button
               key={t.id}
+              role="tab"
+              aria-selected={i === active}
+              aria-controls={`panel-${t.id}`}
+              id={`tab-${t.id}`}
               className={`tipo-tab${i === active ? " is-active" : ""}`}
               onClick={() => select(i)}
             >
-              {t.tab}
+              {t.tab} — {t.surface}
             </button>
           ))}
-        </Reveal>
+        </div>
 
-        <div key={tipo.id} ref={panelRef}>
+        <div
+          key={tipo.id}
+          ref={panelRef}
+          id={`panel-${tipo.id}`}
+          role="tabpanel"
+          aria-labelledby={`tab-${tipo.id}`}
+        >
           <div className="tipo-panel">
             <Reveal variant="left" className="tipo-img">
-              <img src={tipo.img} alt={`Tipología ${tipo.name}`} loading="lazy" />
-              <span className="tipo-badge">Tipología {tipo.name}</span>
+              <ProjectImage
+                slotId={tipo.renderSlot}
+                alt={`Interior de la ${tipo.name}`}
+                aspectRatio="16:9"
+              />
+              <span className="tipo-badge">{tipo.name}</span>
             </Reveal>
 
-            <div className="glass glass-strong tipo-glass">
-              <span className="glass-sheen" />
-              <div>
-                <p className="eyebrow" style={{ color: "var(--sand-2)" }}>
-                  Tipología · {tipo.tab}
-                </p>
-                <h3 className="tipo-name" style={{ marginTop: "0.8rem" }}>
-                  {tipo.name}
-                  <span className="serif-i">{tipo.tagline}</span>
-                </h3>
+            <div className="tipo-content">
+              <div className="tipo-header">
+                <h3>{tipo.name}</h3>
+                <span className="tipo-surface">{tipo.surface}</span>
               </div>
 
               <div className="tipo-specs">
@@ -122,40 +143,48 @@ export default function Tipologias({ onCta }) {
                 ))}
               </div>
 
-              <div className="tipo-plan">
-                <span className="plan-icon">⌂</span>
-                <div className="plan-copy">
-                  <b>Recibí el plano completo</b>
-                  <span>Disponible después de completar el formulario.</span>
-                </div>
+              <p className="tipo-config">{tipo.config}</p>
+
+              <div
+                className="planta-img-wrap"
+                style={{ cursor: "pointer", marginTop: "0.5rem" }}
+                onClick={() => openModal(tipo.planoSlot)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === "Enter" && openModal(tipo.planoSlot)}
+                aria-label={`Ampliar plano de la ${tipo.name}`}
+              >
+                <ProjectImage
+                  slotId={tipo.planoSlot}
+                  alt={`Plano de la ${tipo.name}`}
+                  aspectRatio="Horizontal"
+                  imgStyle={{ objectFit: "contain", height: "280px" }}
+                />
               </div>
 
               <div className="tipo-cta-row">
                 <button
                   className="btn btn-primary"
-                  onClick={() => onCta({ typology: tipo.name })}
+                  onClick={() => {
+                    onCta({ typology: tipo.name, location: "tipologias" });
+                    window.trackEvent?.({ event: "cta_tipologias" });
+                  }}
                 >
-                  Consultar por esta tipología <ArrowIcon />
+                  {tipo.ctaText} <ArrowIcon />
                 </button>
-                <a
-                  className="btn btn-ghost"
-                  href={SITE.whatsappUrl(waText)}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <WhatsAppIcon size={18} /> WhatsApp
-                </a>
               </div>
             </div>
           </div>
         </div>
-
-        <Reveal style={{ marginTop: "2.4rem" }}>
-          <button className="btn btn-ghost" onClick={() => onCta()}>
-            Recibir planos y disponibilidad
-          </button>
-        </Reveal>
       </div>
+
+      {modalOpen && (
+        <ImageModal
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(false)}
+          alt={`Plano ampliado de ${tipo.name}`}
+        />
+      )}
     </section>
   );
 }

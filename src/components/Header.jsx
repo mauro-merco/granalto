@@ -4,7 +4,6 @@ import { NAV_LINKS, SITE } from "../lib/config";
 export default function Header({ onCta }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const ref = useRef(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -25,7 +24,7 @@ export default function Header({ onCta }) {
   };
 
   return (
-    <header ref={ref} className={`header${scrolled ? " is-scrolled" : ""}`}>
+    <header className={`header${scrolled ? " is-scrolled" : ""}`}>
       <div className="container header-inner">
         <nav className="header-nav" aria-label="Principal">
           {NAV_LINKS.slice(0, 3).map((l) => (
@@ -37,7 +36,7 @@ export default function Header({ onCta }) {
 
         <a href="#inicio" className="header-logo" onClick={(e) => go(e, "#inicio")} aria-label="Gran Alto, inicio">
           <img src="./img/logo-white.png" alt="Gran Alto" />
-          <span className="header-tagline">Las Mercedes</span>
+          <span className="header-tagline">Inter - Las Mercedes</span>
         </a>
 
         <div className="header-cta">
@@ -49,7 +48,7 @@ export default function Header({ onCta }) {
             ))}
           </nav>
           <button className="btn btn-primary" onClick={onCta}>
-            Quiero información
+            Solicitar información
           </button>
           <button
             className={`burger${open ? " is-open" : ""}`}
@@ -74,11 +73,8 @@ export default function Header({ onCta }) {
           </a>
         ))}
         <button className="btn btn-primary" onClick={onCta}>
-          Quiero información
+          Solicitar información
         </button>
-        <a href={SITE.whatsappUrl(SITE.whatsappGeneral)} target="_blank" rel="noreferrer" className="btn btn-ghost">
-          Consultar por WhatsApp
-        </a>
       </div>
     </header>
   );

@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { resolveImage } from "../lib/images";
 
 export function Eyebrow({ children }) {
   return <p className="eyebrow">{children}</p>;
@@ -73,12 +74,53 @@ export function LineReveal({ children, as: Tag = "div", className = "", style, .
   );
 }
 
-export function Orbs({ variant = "sand" }) {
+export function ProjectImage({
+  slotId,
+  candidateNames = [],
+  alt,
+  aspectRatio,
+  objectPosition = "center",
+  priority = false,
+  className = "",
+  style,
+  imgStyle,
+}) {
+  const result = resolveImage(slotId);
+
+  if (result.isPlaceholder) {
+    const meta = result.meta || { desc: "Imagen del proyecto", aspect: "16:9" };
+    return (
+      <div
+        className={`project-image-placeholder ${className}`}
+        style={style}
+        data-image-slot={slotId}
+        role="img"
+        aria-label={alt || meta.desc}
+      >
+        <span className="placeholder-icon" aria-hidden="true">📷</span>
+        <span className="placeholder-label">IMAGEN PENDIENTE</span>
+        <span className="placeholder-name">{slotId}</span>
+        <span className="placeholder-desc">{meta.desc}</span>
+        <span className="placeholder-aspect">Formato: {aspectRatio || meta.aspect}</span>
+      </div>
+    );
+  }
+
   return (
-    <>
-      <span className={`orb orb-${variant}`} style={{ width: "46vw", height: "46vw", top: "-12%", left: "-14%" }} />
-      <span className="orb orb-deep" style={{ width: "38vw", height: "38vw", bottom: "-10%", right: "-8%" }} />
-    </>
+    <img
+      src={result.src}
+      alt={alt}
+      loading={priority ? "eager" : "lazy"}
+      fetchPriority={priority ? "high" : undefined}
+      style={{
+        objectPosition,
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        ...imgStyle,
+      }}
+      className={className}
+    />
   );
 }
 
@@ -96,5 +138,55 @@ export function ArrowIcon({ size = 18 }) {
       <path d="M5 12h14" />
       <path d="M12 5l7 7-7 7" />
     </svg>
+  );
+}
+
+export function ImageModal({ src, alt, isOpen, onClose }) {
+  const overlayRef = useRef(null);
+  const contentRef = useRef(null);
+
+  const handleKeyDown = useCallback(
+    (e) => {
+      if (e.key === "Escape") onClose();
+    },
+    [onClose]
+  );
+
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener("keydown", handleKeyDown);
+      document.body.classList.add("is-locked");
+      contentRef.current?.focus();
+    }
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.classList.remove("is-locked");
+    };
+  }, [isOpen, handleKeyDown]);
+
+  return (
+    <div
+      ref={overlayRef}
+      className={`modal-overlay${isOpen ? " is-open" : ""}`}
+      onClick={(e) => {
+        if (e.target === overlayRef.current) onClose();
+      }}
+      role="dialog"
+      aria-modal="true"
+      aria-label={alt || "Ampliar imagen"}
+    >
+      <div className="modal-content" ref={contentRef} tabIndex="-1">
+        <button className="modal-close" onClick={onClose} aria-label="Cerrar">
+          ✕
+        </button>
+        {src ? (
+          <img src={src} alt={alt} style={{ maxWidth: "90vw", maxHeight: "85vh", objectFit: "contain" }} />
+        ) : (
+          <div style={{ width: "70vw", height: "60vh" }}>
+            <ProjectImage slotId="placeholder" alt="Placeholder" />
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

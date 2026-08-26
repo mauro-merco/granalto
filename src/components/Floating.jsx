@@ -1,17 +1,24 @@
 import { useEffect } from "react";
-import { SITE } from "../lib/config";
+import { projectConfig, SITE } from "../lib/config";
 import { WhatsAppIcon } from "./ui";
 
 export function FloatingWhatsApp() {
+  const ready = !!projectConfig.whatsappNumber;
+
   return (
     <a
       className="whatsapp-float"
-      href={SITE.whatsappUrl(SITE.whatsappGeneral)}
-      target="_blank"
-      rel="noreferrer"
-      aria-label="Consultar por WhatsApp"
+      href={ready ? SITE.whatsappUrl(SITE.whatsappGeneral) : "#"}
+      target={ready ? "_blank" : undefined}
+      rel={ready ? "noreferrer" : undefined}
+      aria-label={ready ? "Consultar por WhatsApp" : "WhatsApp pendiente de configuración"}
+      aria-disabled={!ready}
+      onClick={(e) => {
+        if (!ready) e.preventDefault();
+        else window.trackEvent?.({ event: "whatsapp_click" });
+      }}
     >
-      <WhatsAppIcon size={28} />
+      <WhatsAppIcon size={26} />
     </a>
   );
 }
@@ -20,17 +27,8 @@ export function MobileBar({ onCta }) {
   return (
     <div className="mobile-bar">
       <button className="btn btn-primary" onClick={onCta}>
-        Quiero información
+        Solicitar información
       </button>
-      <a
-        className="wa"
-        href={SITE.whatsappUrl(SITE.whatsappGeneral)}
-        target="_blank"
-        rel="noreferrer"
-        aria-label="Consultar por WhatsApp"
-      >
-        <WhatsAppIcon size={22} />
-      </a>
     </div>
   );
 }

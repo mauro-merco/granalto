@@ -1,148 +1,70 @@
-import { useEffect, useRef } from "react";
-import { IMG } from "../lib/images";
-import { Eyebrow, Reveal, ArrowIcon } from "./ui";
+import { Eyebrow, Reveal, ProjectImage } from "./ui";
 
 const AMENITIES = [
-  { img: IMG.pool, num: "01", title: "Piscina", text: "Días de verano sin salir de casa." },
-  { img: IMG.terrace, num: "02", title: "Terraza panorámica", text: "El skyline de Asunción como horizonte." },
-  { img: IMG.gym, num: "03", title: "Gimnasio", text: "Tu rutina, a pasos de tu hogar." },
-  { img: IMG.cowork, num: "04", title: "Espacio cowork", text: "Trabajo y estudio con luz natural." },
-  { img: IMG.lounge, num: "05", title: "Salón de eventos", text: "Reuniones y celebraciones con amigos." },
-  { img: IMG.garden, num: "06", title: "Patio y verde", text: "Naturaleza que se integra al barrio." },
-  { img: IMG.balcony, num: "07", title: "Vigilancia 24/7", text: "Seguridad pensada para la tranquilidad." },
-  { img: IMG.cityGreen, num: "08", title: "Cocheras", text: "Playa de estacionamiento integrada." },
+  {
+    slotId: "amenity-piscina",
+    title: "Piscina panorámica",
+    text: "Una vista abierta sobre Asunción para disfrutar desde la azotea.",
+    featured: true,
+  },
+  {
+    slotId: "amenity-parrilla-exterior",
+    title: "Parrilla al aire libre",
+    text: "Un espacio exterior para compartir encuentros y disfrutar al aire libre.",
+  },
+  {
+    slotId: "amenity-parrilla-climatizada",
+    title: "Parrilla climatizada",
+    text: "Un ambiente interior preparado para disfrutar durante todo el año.",
+  },
+  {
+    slotId: "amenity-gimnasio",
+    title: "Gimnasio",
+    text: "Un espacio pensado para incorporar bienestar y movimiento a la rutina.",
+  },
+  {
+    slotId: "amenity-laundry",
+    title: "Laundry",
+    text: "Una solución práctica integrada a la vida cotidiana del edificio.",
+  },
 ];
 
-export default function Amenities({ onCta }) {
-  const trackRef = useRef(null);
-
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const SPEED = 0.7;
-
-    let pos = 0;
-    let raf = null;
-    let paused = false;
-    let isDown = false;
-    let startX = 0;
-    let startScroll = 0;
-
-    const halfWidth = () => track.scrollWidth / 2;
-
-    const step = () => {
-      if (!paused) {
-        pos += SPEED;
-        const half = halfWidth();
-        if (pos >= half) pos = 0;
-        track.scrollLeft = pos;
-      }
-      raf = requestAnimationFrame(step);
-    };
-
-    const syncPos = () => {
-      pos = track.scrollLeft;
-      const half = halfWidth();
-      if (pos >= half) pos -= half;
-    };
-
-    const pause = () => {
-      paused = true;
-    };
-    const resume = () => {
-      paused = false;
-      if (!isDown) syncPos();
-    };
-
-    const down = (e) => {
-      isDown = true;
-      paused = true;
-      startX = e.pageX;
-      startScroll = track.scrollLeft;
-      track.style.cursor = "grabbing";
-    };
-    const move = (e) => {
-      if (!isDown) return;
-      track.scrollLeft = startScroll - (e.pageX - startX);
-    };
-    const up = () => {
-      if (isDown) {
-        isDown = false;
-        syncPos();
-        paused = false;
-        track.style.cursor = "grab";
-      }
-    };
-
-    if (!reduced) raf = requestAnimationFrame(step);
-
-    track.addEventListener("pointerdown", down);
-    track.addEventListener("pointerenter", pause);
-    track.addEventListener("pointerleave", resume);
-    window.addEventListener("pointermove", move);
-    window.addEventListener("pointerup", up);
-    window.addEventListener("resize", syncPos);
-    return () => {
-      cancelAnimationFrame(raf);
-      track.removeEventListener("pointerdown", down);
-      track.removeEventListener("pointerenter", pause);
-      track.removeEventListener("pointerleave", resume);
-      window.removeEventListener("pointermove", move);
-      window.removeEventListener("pointerup", up);
-      window.removeEventListener("resize", syncPos);
-    };
-  }, []);
-
-  const cards = [...AMENITIES, ...AMENITIES];
-  const renderCard = (a, i) => (
-    <article className="amenity-card" key={`${a.num}-${i}`}>
-      <img src={a.img} alt={a.title} loading="lazy" draggable={false} />
-      <div className="overlay" />
-      <div className="caption">
-        <span className="num">{a.num}</span>
-        <h3>{a.title}</h3>
-        <p>{a.text}</p>
-      </div>
-    </article>
-  );
-
+export default function Amenities() {
   return (
     <section id="amenities" className="section amenities">
-      <span className="orb orb-gold" style={{ width: "40vw", height: "40vw", top: "-15%", left: "-12%" }} />
-
-      <div className="container" style={{ position: "relative", zIndex: 2 }}>
+      <div className="container">
         <Reveal className="sec-head">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: "2rem", flexWrap: "wrap" }}>
-            <div style={{ maxWidth: "700px" }}>
-              <Eyebrow>Espacios y amenities</Eyebrow>
-              <h2 className="display" style={{ marginTop: "1.1rem" }}>
-                Espacios para <span className="serif-i">disfrutar</span> todos los días
-              </h2>
-            </div>
-            <p className="lead" style={{ maxWidth: "360px" }}>
-              Cada ambiente de Gran Alto fue pensado para sumar comodidad,
-              bienestar y calidad a la vida cotidiana.
-            </p>
-          </div>
+          <Eyebrow>Amenities</Eyebrow>
+          <h2 className="display" style={{ marginTop: "1rem" }}>
+            El último nivel, pensado para <span className="serif-i">disfrutar.</span>
+          </h2>
+          <p className="lead" style={{ marginTop: "1rem", maxWidth: "560px" }}>
+            Espacios para encontrarse, entrenar, descansar y disfrutar de la
+            ciudad desde una nueva perspectiva.
+          </p>
         </Reveal>
-      </div>
 
-      <Reveal variant="scale" className="amenities-strip">
-        <div className="amenities-track" ref={trackRef}>
-          {cards.slice(0, AMENITIES.length).map((a, i) => renderCard(a, i))}
-          <div aria-hidden="true" style={{ display: "contents" }}>
-            {cards.slice(AMENITIES.length).map((a, i) => renderCard(a, i + AMENITIES.length))}
-          </div>
+        <div className="amenities-grid">
+          {AMENITIES.map((a, i) => (
+            <Reveal
+              key={a.slotId}
+              variant="scale"
+              delay={i * 60}
+              className={`amenity-card${a.featured ? " amenity-card--featured" : ""}`}
+            >
+              <ProjectImage
+                slotId={a.slotId}
+                alt={a.title}
+                aspectRatio={a.featured ? "16:9" : "4:3"}
+              />
+              <div className="overlay" />
+              <div className="caption">
+                <h3>{a.title}</h3>
+                <p>{a.text}</p>
+              </div>
+            </Reveal>
+          ))}
         </div>
-      </Reveal>
-
-      <div className="container" style={{ position: "relative", zIndex: 2, marginTop: "2.2rem" }}>
-        <Reveal>
-          <button className="btn btn-dark" onClick={onCta}>
-            Quiero conocer todos los espacios <ArrowIcon />
-          </button>
-        </Reveal>
       </div>
     </section>
   );

@@ -1,34 +1,143 @@
-const u = (id, w = 1600) =>
-  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=80`;
+const localImages = {};
 
-export const IMG = {
-  hero: u("photo-1600596542815-ffad4c1539a9", 2000),
-  projectMain: u("photo-1600585154340-be6161a56a0c", 1800),
-  projectSide: u("photo-1512917774080-9991f1c4c750", 1200),
-  building: u("photo-1486406146926-c627a92ad1ab", 1800),
-  buildingDark: u("photo-1600573472592-401b489a3cdc", 1800),
-  interiorLiving: u("photo-1600607687939-ce8a6c25118c", 1600),
-  interiorLiving2: u("photo-1586023492125-27b2c045efd7", 1600),
-  interiorBed: u("photo-1505691938895-1758d7feb511", 1400),
-  interiorKitchen: u("photo-1556912167-f556f1f39fdf", 1400),
-  interiorBath: u("photo-1552321554-5fefe8c9ef14", 1200),
-  interiorDetail: u("photo-1618221195710-dd6b41faaea6", 1400),
-  balcony: u("photo-1600566753086-00f18fb6b3ea", 1600),
-  lounge: u("photo-1522708323590-d24dbb6b0267", 1400),
-  pool: u("photo-1600585152220-90363fe7e115", 1600),
-  garden: u("photo-1466611653911-95081537e5b7", 1200),
-  gym: u("photo-1534438327276-14e5300c3a48", 1200),
-  cowork: u("photo-1497366754035-f200968a6e72", 1400),
-  terrace: u("photo-1499856871958-5b9627545d1a", 1600),
-  city: u("photo-1477959858617-67f85cf4f1df", 2000),
-  cityGreen: u("photo-1449824913935-59a10b8d2000", 1800),
-  park: u("photo-1502082553048-f009c37129b9", 1600),
-  construction: u("photo-1541888946425-d81bb19240f5", 1600),
-  construction2: u("photo-1504307651254-35680f356dfd", 1600),
-  construction3: u("photo-1503387762-592deb58ef4e", 1600),
-  crane: u("photo-1429497419816-9ca5cfb4571a", 1400),
-  night: u("photo-1477959858617-67f85cf4f1df", 1600),
-  walk: u("photo-1499793983690-e29da59ef1c2", 1400),
-  close: u("photo-1523217582562-09d0def993a6", 1200),
-  duplex: u("photo-1560185007-cde436f6a4d0", 1600),
+const SLOT_CANDIDATES = {
+  "hero-edificio-gran-alto": [],
+  "proyecto-corte-edificio": [],
+  "planta-general": [],
+  "tipologia-a-plano": [],
+  "tipologia-a-render": [],
+  "tipologia-b-plano": [],
+  "tipologia-b-render": [],
+  "tipologia-c-plano": [],
+  "tipologia-c-render": [],
+  "amenity-piscina": [],
+  "amenity-parrilla-exterior": [],
+  "amenity-parrilla-climatizada": [],
+  "amenity-gimnasio": [],
+  "amenity-laundry": [],
+  "ubicacion-mapa": [],
+  "ubicacion-colegio-san-andres": [],
+  "ubicacion-colegio-inter": [],
+  "ubicacion-colegio-san-jose": [],
+  "ubicacion-sanatorio-migone": [],
+  "ubicacion-ande-central": [],
+  "ubicacion-superseis-espana": [],
+  "avance-obra-01": [],
+  "avance-obra-02": [],
+  "cierre-edificio": [],
 };
+
+const PLACEHOLDER_META = {
+  "hero-edificio-gran-alto": {
+    desc: "Vista aérea o fachada exterior real del edificio Gran Alto.",
+    aspect: "16:9 o 3:2",
+  },
+  "proyecto-corte-edificio": {
+    desc: "Corte vertical del edificio con niveles.",
+    aspect: "4:5 o vertical",
+  },
+  "planta-general": {
+    desc: "Plano completo de planta general.",
+    aspect: "Horizontal ancho",
+  },
+  "tipologia-a-plano": {
+    desc: "Plano Tipología A, 107 m².",
+    aspect: "Horizontal",
+  },
+  "tipologia-a-render": {
+    desc: "Render interior correspondiente a Tipología A.",
+    aspect: "16:9 o 4:3",
+  },
+  "tipologia-b-plano": {
+    desc: "Plano Tipología B, 93 m².",
+    aspect: "Horizontal",
+  },
+  "tipologia-b-render": {
+    desc: "Render interior correspondiente a Tipología B.",
+    aspect: "16:9 o 4:3",
+  },
+  "tipologia-c-plano": {
+    desc: "Plano Tipología C, 90 m².",
+    aspect: "Horizontal",
+  },
+  "tipologia-c-render": {
+    desc: "Render interior correspondiente a Tipología C.",
+    aspect: "16:9 o 4:3",
+  },
+  "amenity-piscina": {
+    desc: "Piscina panorámica en azotea.",
+    aspect: "16:9",
+  },
+  "amenity-parrilla-exterior": {
+    desc: "Parrilla y estar al aire libre.",
+    aspect: "4:3 o 3:2",
+  },
+  "amenity-parrilla-climatizada": {
+    desc: "Parrilla climatizada interior.",
+    aspect: "4:3 o 3:2",
+  },
+  "amenity-gimnasio": {
+    desc: "Gimnasio del edificio.",
+    aspect: "4:3 o 3:2",
+  },
+  "amenity-laundry": {
+    desc: "Laundry del edificio.",
+    aspect: "4:3 o 3:2",
+  },
+  "ubicacion-mapa": {
+    desc: "Mapa del dossier con Gran Alto y referencias.",
+    aspect: "4:3 u horizontal",
+  },
+  "ubicacion-colegio-san-andres": {
+    desc: "Fachada del Colegio San Andrés.",
+    aspect: "4:3",
+  },
+  "ubicacion-colegio-inter": {
+    desc: "Fachada del Colegio Inter.",
+    aspect: "4:3",
+  },
+  "ubicacion-colegio-san-jose": {
+    desc: "Fachada del Colegio San José.",
+    aspect: "4:3",
+  },
+  "ubicacion-sanatorio-migone": {
+    desc: "Fachada del Sanatorio Migone.",
+    aspect: "4:3",
+  },
+  "ubicacion-ande-central": {
+    desc: "ANDE Central.",
+    aspect: "4:3",
+  },
+  "ubicacion-superseis-espana": {
+    desc: "Superseis España.",
+    aspect: "4:3",
+  },
+  "avance-obra-01": {
+    desc: "Foto real y fechada del avance de obra.",
+    aspect: "4:3",
+  },
+  "avance-obra-02": {
+    desc: "Segunda foto real y fechada del avance.",
+    aspect: "4:3",
+  },
+  "cierre-edificio": {
+    desc: "Segunda vista real del proyecto para el CTA final.",
+    aspect: "16:9",
+  },
+};
+
+export function resolveImage(slotId) {
+  if (localImages[slotId]) {
+    return { src: localImages[slotId], isPlaceholder: false };
+  }
+  const candidates = SLOT_CANDIDATES[slotId] || [];
+  for (const name of candidates) {
+    if (localImages[name]) {
+      return { src: localImages[name], isPlaceholder: false };
+    }
+  }
+  return { src: null, isPlaceholder: true, meta: PLACEHOLDER_META[slotId] };
+}
+
+export const IMG_SLOTS = SLOT_CANDIDATES;
+export const PLACEHOLDER_INFO = PLACEHOLDER_META;
