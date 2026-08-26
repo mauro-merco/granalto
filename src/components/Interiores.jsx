@@ -3,7 +3,8 @@ import { Eyebrow, Reveal, ProjectImage } from "./ui";
 const RENDERS = [
   { slotId: "tipologia-a-render", label: "Interior · Tipología A" },
   { slotId: "tipologia-b-render", label: "Interior · Tipología B" },
-  { slotId: "tipologia-c-render", label: "Interior · Tipología C" },
+  { slotId: "tipologia-c-render", label: "Interior · Tipología C · Vista 1" },
+  { slotId: "tipologia-c-render-secundario", label: "Interior · Tipología C · Vista 2" },
 ];
 
 export default function Interiores() {

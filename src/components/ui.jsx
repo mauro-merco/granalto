@@ -76,7 +76,6 @@ export function LineReveal({ children, as: Tag = "div", className = "", style, .
 
 export function ProjectImage({
   slotId,
-  candidateNames = [],
   alt,
   aspectRatio,
   objectPosition = "center",

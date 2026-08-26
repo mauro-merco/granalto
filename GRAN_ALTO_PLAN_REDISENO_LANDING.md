@@ -38,7 +38,55 @@ Modificar la landing existente de Gran Alto, sin reconstruir innecesariamente to
 
 ## 1. Sistema de placeholders de imágenes
 
-Antes de maquetar, buscar imágenes dentro de la carpeta local del proyecto usando coincidencias por nombre, no por posición. La carpeta puede tener un nombre como `images`, `img`, `assets`, `public/images` o equivalente.
+Todas las imágenes reales entregadas se encuentran en la ruta exacta:
+
+```text
+src/imgs/
+```
+
+No buscar estos archivos en `public`, `assets`, `images` ni otras carpetas. No moverlos salvo que la arquitectura actual del proyecto lo exija de forma imprescindible.
+
+### Imports obligatorios desde `src/imgs`
+
+No construir rutas dinámicas con strings ni usar nombres aproximados para los 12 archivos confirmados. Importarlos explícitamente respetando mayúsculas, guiones y extensiones, porque Vercel/Linux diferencia mayúsculas y minúsculas:
+
+```js
+import implantacionImg from "./imgs/IMPLANTACION.jpg";
+import fachadaFrontalImg from "./imgs/FACHADA-FRONTAL.png";
+import fachadaLateralImg from "./imgs/FACHADA-LATERAL.png";
+import lobbyImg from "./imgs/LOBBY.jpg";
+import dptoAImg from "./imgs/DEPTO-A.png";
+import dptoBImg from "./imgs/DPTO-B.jpg";
+import dptoC01Img from "./imgs/DPTO-C-001.jpg";
+import dptoC02Img from "./imgs/DPTO-C-002.jpg";
+import azoteaDroneImg from "./imgs/AZOTEA-DRONE.jpg";
+import quinchoPiscinaImg from "./imgs/QUINCHO-PISCINA.png";
+import quinchoDescansoImg from "./imgs/QUINCHO-DESCANSO.jpg";
+import salonMultiusoImg from "./imgs/SALON-MULTIUSO.jpg";
+```
+
+> Si el archivo que contiene los imports no está directamente dentro de `src`, ajustar únicamente la cantidad de `../`, pero mantener como destino final exacto `src/imgs/NOMBRE-DEL-ARCHIVO.ext`.
+
+Crear un mapa explícito:
+
+```js
+export const projectImages = {
+  hero: implantacionImg,
+  fachadaFrontal: fachadaFrontalImg,
+  fachadaLateral: fachadaLateralImg,
+  lobby: lobbyImg,
+  dptoA: dptoAImg,
+  dptoB: dptoBImg,
+  dptoC01: dptoC01Img,
+  dptoC02: dptoC02Img,
+  piscina: azoteaDroneImg,
+  amenitiesGeneral: quinchoPiscinaImg,
+  parrillaExterior: quinchoDescansoImg,
+  parrillaClimatizada: salonMultiusoImg,
+};
+```
+
+Los placeholders se utilizan exclusivamente para los assets faltantes listados más adelante. Si alguno de los 12 imports anteriores falla, corregir la ruta; no reemplazarlo por placeholder.
 
 ### Regla de resolución
 
@@ -99,6 +147,68 @@ Ejemplo conceptual del contenido visible:
 | `avance-obra-02` | `avance-obra-02`, `obra-gran-alto-02` | Segunda foto real y fechada del avance | 4:3 |
 | `cierre-edificio` | `cierre-gran-alto`, `gran-alto-noche`, `fachada-gran-alto-02` | Segunda vista real del proyecto para el CTA final | 16:9 |
 
+### Mapeo confirmado de los archivos entregados
+
+Los siguientes archivos ya fueron revisados y deben asignarse exactamente de esta manera. Este mapeo tiene prioridad sobre la búsqueda automática por palabras clave.
+
+| Archivo real | Slot asignado | Módulo y uso exacto | Tratamiento |
+| --- | --- | --- | --- |
+| `IMPLANTACION.jpg` | `hero-edificio-gran-alto` | Hero principal. Es la imagen más completa del edificio implantado en Las Mercedes. | Usar como fondo horizontal. `object-position: center 55%`. Aplicar overlay oscuro para legibilidad. |
+| `FACHADA-FRONTAL.png` | `fachada-frontal` | Galería del proyecto, después del concepto. Mostrar el edificio completo de frente. | Mantener formato vertical. `object-fit: cover`; no cortar coronamiento ni acceso. |
+| `FACHADA-LATERAL.png` | `fachada-lateral` | Galería del proyecto y visual del CTA final. Muestra acceso, ladrillo y relación con la calle. | Mantener formato vertical. En CTA final usar composición dividida, no intentar convertirla en fondo 16:9. |
+| `LOBBY.jpg` | `lobby-ingreso` | Galería del proyecto. Caption: `Lobby de acceso`. | Mostrar completa o con recorte 4:3 centrado. No llamarlo cowork. |
+| `DEPTO-A.png` | `tipologia-a-render` | Render principal de la Tipología A y galería de interiores. | Horizontal 2:1. `object-fit: cover`; conservar sofá, cocina y balcón. |
+| `DPTO-B.jpg` | `tipologia-b-render` | Render principal de la Tipología B y galería de interiores. | Horizontal 2:1. `object-fit: cover`; conservar living y cocina. |
+| `DPTO-C-001.jpg` | `tipologia-c-render` | Render principal de la Tipología C dentro del selector. | Horizontal 2:1. Usar como primera vista porque muestra mejor la profundidad de la planta. |
+| `DPTO-C-002.jpg` | `tipologia-c-render-secundario` | Segunda vista de Tipología C dentro de la galería de interiores. | Horizontal 2:1. No asignarla a otra tipología. |
+| `AZOTEA-DRONE.jpg` | `amenity-piscina` | Imagen principal de Amenities. Muestra piscina panorámica y contexto urbano. | Horizontal. Usar como card grande de piscina. |
+| `QUINCHO-PISCINA.png` | `amenities-vista-general` | Apertura o banner secundario de Amenities. Muestra parrilla exterior, descanso y piscina en una misma vista. | Horizontal panorámica. No usarla como única imagen de piscina porque `AZOTEA-DRONE.jpg` explica mejor la piscina panorámica. |
+| `QUINCHO-DESCANSO.jpg` | `amenity-parrilla-exterior` | Card `Parrilla al aire libre`. | Horizontal. Conservar parrilla, pérgola, estar y vegetación. |
+| `SALON-MULTIUSO.jpg` | `amenity-parrilla-climatizada` | Card `Parrilla climatizada`. Aunque el archivo se llama salón multiuso, visualmente muestra el espacio interior con parrilla. | Horizontal. Caption público: `Parrilla climatizada`; no mostrar el nombre técnico del archivo. |
+
+### Nuevos slots confirmados por los archivos entregados
+
+Agregar al componente de imágenes estos slots:
+
+| Slot | Archivo exacto | Alt text exacto |
+| --- | --- | --- |
+| `fachada-frontal` | `FACHADA-FRONTAL.png` | `Fachada frontal del edificio Gran Alto en Las Mercedes` |
+| `fachada-lateral` | `FACHADA-LATERAL.png` | `Acceso y fachada lateral de Gran Alto` |
+| `lobby-ingreso` | `LOBBY.jpg` | `Lobby de acceso de Gran Alto` |
+| `tipologia-c-render-secundario` | `DPTO-C-002.jpg` | `Segunda vista interior de la Tipología C` |
+| `amenities-vista-general` | `QUINCHO-PISCINA.png` | `Vista general de la azotea con parrilla, estar y piscina` |
+
+### Assets que todavía faltan
+
+Mantener placeholders únicamente para estos recursos:
+
+#### Faltantes prioritarios
+
+1. `tipologia-a-plano` — plano de la Tipología A, 107 m².
+2. `tipologia-b-plano` — plano de la Tipología B, 93 m².
+3. `tipologia-c-plano` — plano de la Tipología C, 90 m².
+4. `planta-general` — planta completa del nivel.
+5. `proyecto-corte-edificio` — corte vertical con 7 niveles residenciales, 1 de amenities y 2 de estacionamiento.
+6. `amenity-gimnasio` — render o fotografía del gimnasio real.
+7. `amenity-laundry` — render o fotografía del laundry real.
+
+#### Faltantes de ubicación
+
+8. `ubicacion-mapa` — mapa de Gran Alto en Las Mercedes.
+9. `ubicacion-colegio-san-andres` — Colegio San Andrés.
+10. `ubicacion-colegio-inter` — Colegio Inter.
+11. `ubicacion-colegio-san-jose` — Colegio San José.
+12. `ubicacion-sanatorio-migone` — Sanatorio Migone.
+13. `ubicacion-ande-central` — ANDE Central.
+14. `ubicacion-superseis-espana` — Superseis España.
+
+#### Faltantes condicionales
+
+15. `avance-obra-01` y `avance-obra-02` — solo hacen falta si se mantendrá el módulo de avance de obra.
+16. Logo oficial de Gran Alto en SVG o PNG transparente — necesario si todavía no se encuentra dentro del proyecto.
+
+No hace falta solicitar otra imagen para el hero, fachadas, lobby, interiores A/B/C, piscina, parrilla exterior o parrilla climatizada: esos usos ya están cubiertos.
+
 ### Componentes de imagen
 
 Crear un único componente reutilizable, por ejemplo `ProjectImage`, que reciba:
@@ -157,6 +267,118 @@ El rojo es provisional hasta contar con el color oficial. Debe estar centralizad
 - Texto grande: `clamp(1.12rem, 1.5vw, 1.35rem)`.
 - Cuerpo: `1rem–1.125rem`, line-height mínimo `1.6`.
 
+### Márgenes, paddings y ritmo vertical obligatorios
+
+La versión actual deja bloques de vacío excesivos. Reemplazar alturas fijas y márgenes acumulados por este sistema:
+
+```css
+.container {
+  width: min(100% - 128px, 1240px);
+  margin-inline: auto;
+}
+
+.section {
+  padding-block: 96px;
+}
+
+.section-header {
+  margin-bottom: 48px;
+}
+
+@media (max-width: 1024px) {
+  .container {
+    width: min(100% - 64px, 1240px);
+  }
+
+  .section {
+    padding-block: 80px;
+  }
+}
+
+@media (max-width: 767px) {
+  .container {
+    width: calc(100% - 40px);
+  }
+
+  .section {
+    padding-block: 64px;
+  }
+
+  .section-header {
+    margin-bottom: 32px;
+  }
+}
+```
+
+Reglas adicionales:
+
+- Desktop: mínimo 64 px de margen lateral cuando el viewport lo permita.
+- Tablet: 32 px laterales.
+- Mobile: 20 px laterales.
+- No sumar `padding-top` de sección + `margin-top` del primer hijo.
+- El primer hijo de cada sección debe tener `margin-top: 0`.
+- El último hijo de cada sección debe tener `margin-bottom: 0`.
+- Distancia entre eyebrow y título: 16 px.
+- Distancia entre título y bajada: 20–24 px.
+- Distancia entre bajada y CTA/grilla: 32–48 px.
+- Gap de grillas: 24 px desktop, 16 px mobile.
+- No usar secciones de más de 1.100 px de alto salvo que su contenido real lo requiera.
+- No usar `min-height` en Proyecto, Tipologías, Planta general, Amenities, Interiores, Ubicación, Formulario o FAQ.
+- La altura debe surgir del contenido y del padding, no de valores como `100vh`, `120vh` o `150vh`.
+
+### Transparencias, overlays y contraste
+
+La opacidad nunca debe aplicarse al contenedor que incluye texto, logo, botones o formulario. No usar:
+
+```css
+.hero { opacity: .6; }
+.card { opacity: .8; }
+.section-content { opacity: 0; }
+```
+
+Usar overlays separados con pseudo-elemento:
+
+```css
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.72) 0%,
+    rgba(0, 0, 0, 0.48) 45%,
+    rgba(0, 0, 0, 0.18) 100%
+  );
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  opacity: 1;
+}
+```
+
+Valores obligatorios:
+
+- Hero: overlay negro equivalente a 45–65%, con mayor oscuridad detrás del texto.
+- Cards con texto superpuesto: gradiente inferior de `rgba(0,0,0,.72)` a transparente.
+- Header sobre hero: fondo inicial `rgba(15,15,15,.18)` + `backdrop-filter: blur(8px)`; no usar una banda gris opaca.
+- Header al hacer scroll: fondo `rgba(255,255,255,.96)`, texto carbón y borde `#D9D9D4`.
+- No poner filtros de opacidad sobre las imágenes de interiores, fachada o amenities.
+- Los textos sobre fotografía deben alcanzar contraste AA.
+- El rojo nunca debe bajar de 90% de opacidad en botones o texto funcional.
+- Los placeholders deben ser legibles, pero visualmente secundarios; no deben aparecer dentro del logo, el header o encima del H1.
+
+### Sombras, bordes y tarjetas
+
+- Usar sombras con moderación: `0 14px 40px rgba(0,0,0,.08)` como máximo.
+- No aplicar glow, blur de color ni glassmorphism a cards de producto.
+- Borde estándar: `1px solid #D9D9D4`.
+- Cards claras: fondo blanco sólido, no transparente.
+- Cards sobre rojo/carbón: fondo transparente únicamente si el contraste es suficiente.
+- Mantener radio de 8 px en cards y 4 px en botones.
+
 ### Textura
 
 Crear una textura topográfica sutil mediante un asset local si existe con palabras `textura`, `topografia` o `gran-alto-pattern`. Si no existe, no inventarla con una imagen externa. Se puede simular solamente con líneas SVG abstractas propias, sin copiar mapas reales. Opacidad máxima: 7%.
@@ -199,6 +421,10 @@ Implementar los siguientes módulos exactamente en este orden.
 - Logo y links blancos sobre el hero; carbón después del scroll.
 - Menú mobile accesible.
 - El CTA lleva a `#contacto`.
+- El header no puede contener placeholders de imágenes. Si el logo oficial no carga, mostrar únicamente el wordmark textual `Gran Alto`.
+- Altura desktop: 80 px. Altura mobile: 68 px.
+- Padding horizontal alineado con `.container`.
+- No centrar el logo sobre los links si produce superposición; usar grid `1fr auto 1fr`, con navegación izquierda, logo centro y navegación/CTA derecha.
 
 ---
 
@@ -230,7 +456,9 @@ Implementar los siguientes módulos exactamente en este orden.
 **CTA primario:** `Conocé las tipologías` → `#tipologias`  
 **CTA secundario:** `Solicitar información` → `#contacto`
 
-**Diseño:** overlay negro de 45–60%, contenido alineado abajo a la izquierda, altura mínima 760 px desktop y 680 px mobile; nunca más de 100vh.
+**Diseño:** usar `IMPLANTACION.jpg` desde `src/imgs`. Overlay negro en capa separada; contenido siempre a opacidad 1. Contenido alineado abajo a la izquierda. Altura: 760 px desktop, 680 px tablet y 620 px mobile; nunca más de 100vh. El bloque de copy tendrá ancho máximo de 760 px. Los cuatro datos rápidos deben quedar en la parte inferior sin competir con el H1.
+
+No mostrar el placeholder `hero-edificio-gran-alto`: esta imagen ya existe. Si no carga, corregir el import exacto desde `src/imgs/IMPLANTACION.jpg`.
 
 ---
 
@@ -271,6 +499,14 @@ Fondo blanco, texto carbón, separadores y línea superior/inferior rojos. Anima
 - `2 niveles` — Estacionamiento
 
 No agregar otras cifras.
+
+Debajo del bloque de texto y corte del edificio, agregar una galería editorial denominada `El proyecto` con estas tres imágenes exactas:
+
+1. `FACHADA-FRONTAL.png` — caption `Fachada frontal`.
+2. `FACHADA-LATERAL.png` — caption `Acceso principal`.
+3. `LOBBY.jpg` — caption `Lobby de acceso`.
+
+Diseño desktop: dos columnas, fachada frontal ocupando la columna izquierda en vertical; fachada lateral y lobby apiladas en la derecha. Diseño mobile: carrusel accesible o una columna. No presentar el lobby como cowork ni como amenity.
 
 ---
 
@@ -329,6 +565,10 @@ Crear tabs accesibles con estos nombres exactos:
 - Plano clickeable con modal/lightbox y zoom.
 - No bloquear planos detrás del formulario.
 - Cada CTA desplaza al formulario y preselecciona la tipología elegida.
+- El render y el plano deben compartir una grilla 58/42 en desktop. No dejar una columna vacía cuando falte el plano: mantener el render real visible y mostrar el placeholder técnico en la segunda columna.
+- Altura del render: 520–620 px desktop y 260–340 px mobile.
+- Los tabs deben quedar a no más de 48 px del contenido de la tipología.
+- No usar márgenes superiores superiores a 64 px dentro del módulo.
 
 ---
 
@@ -352,6 +592,8 @@ Crear tabs accesibles con estos nombres exactos:
 
 Abrir el plano en modal con zoom. En mobile no generar overflow horizontal en la página.
 
+Mientras falte el plano, el placeholder debe medir como máximo 720 px de ancho por 420 px de alto. No permitir que este módulo supere aproximadamente 760 px de alto total mientras solo contenga un placeholder.
+
 ---
 
 ### MÓDULO 07 — Amenities
@@ -369,6 +611,8 @@ Abrir el plano en modal con zoom. En mobile no generar overflow horizontal en la
 **Bajada exacta:**
 
 > Espacios para encontrarse, entrenar, descansar y disfrutar de la ciudad desde una nueva perspectiva.
+
+Antes de la grilla de cards, usar `QUINCHO-PISCINA.png` como vista panorámica general con caption `Amenities en la azotea`.
 
 **Cards exactas:**
 
@@ -389,6 +633,16 @@ Abrir el plano en modal con zoom. En mobile no generar overflow horizontal en la
    Imagen: `amenity-laundry`
 
 **Diseño:** piscina como card principal ocupando dos columnas; las otras cuatro en cards secundarias. En mobile, una columna.
+
+Todas las cards deben tener imagen visible, fondo sólido y texto a opacidad 1. No aplicar transparencia global a la grilla. Alturas recomendadas: card principal 560 px; secundarias 360–420 px; mobile 300–360 px.
+
+**Asignación de archivos confirmada:**
+
+- Piscina panorámica → `AZOTEA-DRONE.jpg`.
+- Parrilla al aire libre → `QUINCHO-DESCANSO.jpg`.
+- Parrilla climatizada → `SALON-MULTIUSO.jpg`.
+- Gimnasio → placeholder `amenity-gimnasio` hasta recibir imagen real.
+- Laundry → placeholder `amenity-laundry` hasta recibir imagen real.
 
 ---
 
@@ -411,6 +665,13 @@ Mostrar los slots `tipologia-a-render`, `tipologia-b-render` y `tipologia-c-rend
 - `Interior · Tipología A`
 - `Interior · Tipología B`
 - `Interior · Tipología C`
+
+La galería debe usar estos archivos exactos:
+
+- `DEPTO-A.png` → `Interior · Tipología A`.
+- `DPTO-B.jpg` → `Interior · Tipología B`.
+- `DPTO-C-001.jpg` → `Interior · Tipología C · Vista 1`.
+- `DPTO-C-002.jpg` → `Interior · Tipología C · Vista 2`.
 
 No afirmar materiales o terminaciones que no estén indicados en este documento.
 
@@ -458,6 +719,8 @@ Añadir al lado una etiqueta discreta en modo desarrollo: `DATO A VALIDAR ANTES 
 **CTA:** `Cómo llegar`
 
 Mientras no exista una URL oficial de Google Maps, el CTA debe quedar deshabilitado con atributo `aria-disabled="true"` y texto auxiliar `Enlace de ubicación pendiente`.
+
+Mientras falten las fotografías de los seis puntos cercanos, no renderizar seis cards gigantes vacías. Mostrar una lista editorial compacta en dos columnas, con nombre y distancia/referencia cuando exista. El módulo completo no debe superar aproximadamente 900 px hasta que se agreguen imágenes reales.
 
 ---
 
@@ -513,6 +776,8 @@ Si no existen imágenes reales y fecha, no mostrar absolutamente nada de este m�
 
 Usar fondo rojo o carbón, sin imagen de skyline. No mencionar ROI, renta, valorización porcentual ni demanda.
 
+El fondo rojo debe ser sólido `#D71920`. Todo el texto principal debe ser blanco a opacidad 1. El texto secundario puede usar `rgba(255,255,255,.82)`, nunca menos. Evitar grandes áreas rojas vacías: usar grilla 45/55 con título a la izquierda y argumentos a la derecha.
+
 ---
 
 ### MÓDULO 12 — Formulario de contacto
@@ -555,6 +820,8 @@ Usar fondo rojo o carbón, sin imagen de skyline. No mencionar ROI, renta, valor
 
 No simular envíos exitosos. Si no existe backend, conservar validación local y mostrar claramente en desarrollo: `Integración de formulario pendiente`.
 
+Diseño desktop: grilla 40/60, introducción a la izquierda y formulario a la derecha. Fondo del formulario blanco sólido con borde; no usar transparencia. Padding interno 40–48 px. Mobile: padding 24 px. Separación entre campos 20 px. No dejar el módulo con texto únicamente arriba y un bloque vacío debajo.
+
 ---
 
 ### MÓDULO 13 — Preguntas frecuentes
@@ -586,13 +853,15 @@ No simular envíos exitosos. Si no existe backend, conservar validación local y
 
 No incluir por ahora preguntas sobre fecha de entrega, financiación, precio, reserva o porcentaje de obra porque no hay respuestas confirmadas.
 
+Cada pregunta debe ocupar únicamente la altura de su contenido. Padding vertical 22–24 px. No establecer altura mínima para las respuestas ni para el acordeón completo.
+
 ---
 
 ### MÓDULO 14 — CTA final
 
 **Acción sobre landing actual:** conservar módulo y reemplazar copy e imagen.
 
-**Imagen:** slot `cierre-edificio`. Si no existe, usar `hero-edificio-gran-alto`; si tampoco existe, mostrar placeholder.
+**Imagen:** usar `FACHADA-LATERAL.png` en una composición dividida 45/55, con la imagen vertical a la izquierda y el texto sobre fondo carbón a la derecha. En mobile colocar imagen arriba y contenido debajo. No usarla como background horizontal. Como esta imagen ya existe, no mostrar el placeholder `cierre-edificio`.
 
 **Eyebrow:** `EL PRÓXIMO PASO`
 
@@ -703,6 +972,9 @@ Eliminar del resultado final:
 - Ningún texto, imagen, CTA o formulario puede quedar invisible si falla JavaScript o no se dispara un observer.
 - El estado inicial del contenido debe ser visible.
 - Animaciones solamente como mejora progresiva.
+- Eliminar cualquier regla base equivalente a `opacity: 0`, `visibility: hidden` o `transform: translateY(...)` aplicada antes de que el elemento entre en viewport.
+- Si se mantiene una clase de reveal, la clase sin JavaScript debe ser visible y la animación debe iniciarse únicamente después de confirmar que el observer está activo.
+- Una captura `fullPage` tomada inmediatamente después de `networkidle` debe mostrar todo el contenido de todos los módulos. No aceptar una página con títulos aislados y grandes áreas vacías.
 - Con `prefers-reduced-motion: reduce`, eliminar marquesina automática, parallax, fades largos y traslaciones.
 - No usar `min-height: 100vh` en módulos interiores.
 
@@ -794,6 +1066,8 @@ Antes de considerar terminado el cambio:
     - slots que siguen como placeholder;
     - datos comerciales todavía pendientes;
     - resultado de build/lint/tests.
+14. Tomar una captura full-page en desktop y otra en mobile después de cargar la página, sin hacer scroll manual previo.
+15. Rechazar el resultado si en esas capturas hay secciones en blanco, contenido transparente, imágenes no cargadas, textos demasiado tenues, más de 160 px de vacío vertical sin intención o placeholders correspondientes a alguno de los 12 archivos que ya existen en `src/imgs`.
 
 ---
 

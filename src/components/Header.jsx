@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { NAV_LINKS, SITE } from "../lib/config";
+import { ArrowIcon } from "./ui";
 
-export default function Header({ onCta }) {
+export default function Header({ onCta, minimal = false }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -20,8 +21,42 @@ export default function Header({ onCta }) {
   const go = (e, href) => {
     e.preventDefault();
     setOpen(false);
-    document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+    if (href === "#/contacto") {
+      window.location.hash = "/contacto";
+      window.scrollTo({ top: 0 });
+    } else {
+      document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+    }
   };
+
+  const goHome = (e) => {
+    e.preventDefault();
+    window.location.hash = "";
+    window.scrollTo({ top: 0 });
+  };
+
+  if (minimal) {
+    return (
+      <header className="header header--minimal">
+        <div className="container header-inner">
+          <a href="/#" className="header-logo" onClick={goHome} aria-label="Gran Alto, inicio">
+            <img src={SITE.logo} alt="Gran Alto" />
+            <span className="header-tagline">Inter - Las Mercedes</span>
+          </a>
+          <div className="header-cta">
+            <a
+              href="/#"
+              className="btn btn-secondary"
+              onClick={goHome}
+              style={{ padding: "0.65rem 1.3rem", fontSize: "0.78rem" }}
+            >
+              <ArrowIcon size={14} /> Volver al inicio
+            </a>
+          </div>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className={`header${scrolled ? " is-scrolled" : ""}`}>
@@ -35,7 +70,7 @@ export default function Header({ onCta }) {
         </nav>
 
         <a href="#inicio" className="header-logo" onClick={(e) => go(e, "#inicio")} aria-label="Gran Alto, inicio">
-          <img src="./img/logo-white.png" alt="Gran Alto" />
+          <img src={SITE.logo} alt="Gran Alto" />
           <span className="header-tagline">Inter - Las Mercedes</span>
         </a>
 

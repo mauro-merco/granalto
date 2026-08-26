@@ -10,7 +10,7 @@ export default function Footer() {
       <div className="container">
         <div className="footer-grid">
           <div className="footer-brand">
-            <img src="./img/logo-white.png" alt="Gran Alto Las Mercedes" />
+            <img src={SITE.logo} alt="Gran Alto Las Mercedes" />
             <p>Arquitectura, funcionalidad y calidad en Las Mercedes.</p>
           </div>
 
@@ -69,7 +69,7 @@ export default function Footer() {
               <li><a href="#tipologias">Tipologías</a></li>
               <li><a href="#amenities">Amenities</a></li>
               <li><a href="#ubicacion">Ubicación</a></li>
-              <li><a href="#contacto">Contacto</a></li>
+              <li><a href="#/contacto">Contacto</a></li>
             </ul>
           </div>
         </div>

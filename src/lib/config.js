@@ -1,3 +1,5 @@
+import logoImg from "../imgs/logo.JPG";
+
 export const projectConfig = {
   publicationReady: false,
   address: "José Berges 1411, Asunción",
@@ -14,6 +16,7 @@ export const projectConfig = {
 export const SITE = {
   name: "Gran Alto",
   subtitle: "Inter - Las Mercedes",
+  logo: logoImg,
   whatsappUrl: (text) =>
     projectConfig.whatsappNumber
       ? `https://wa.me/${projectConfig.whatsappNumber}?text=${encodeURIComponent(text)}`
@@ -27,5 +30,5 @@ export const NAV_LINKS = [
   { label: "Tipologías", href: "#tipologias" },
   { label: "Amenities", href: "#amenities" },
   { label: "Ubicación", href: "#ubicacion" },
-  { label: "Contacto", href: "#contacto" },
+  { label: "Contacto", href: "#/contacto" },
 ];

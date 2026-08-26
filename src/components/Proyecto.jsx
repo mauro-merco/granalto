@@ -1,4 +1,5 @@
 import { Eyebrow, Reveal, LineReveal, ProjectImage } from "./ui";
+import { projectImages } from "../lib/images";
 
 export default function Proyecto() {
   return (
@@ -56,6 +57,37 @@ export default function Proyecto() {
               </Reveal>
             </div>
           </div>
+        </div>
+
+        {/* Galería editorial: Fachadas y Lobby */}
+        <div className="proyecto-gallery">
+          <Reveal variant="scale" delay={0} className="proyecto-gallery-item proyecto-gallery-item--tall">
+            <img
+              src={projectImages.fachadaFrontal}
+              alt="Fachada frontal del edificio Gran Alto en Las Mercedes"
+              loading="lazy"
+              style={{ objectFit: "cover" }}
+            />
+            <div className="proyecto-gallery-caption">Fachada frontal</div>
+          </Reveal>
+          <Reveal variant="scale" delay={80} className="proyecto-gallery-item">
+            <img
+              src={projectImages.fachadaLateral}
+              alt="Acceso y fachada lateral de Gran Alto"
+              loading="lazy"
+              style={{ objectFit: "cover" }}
+            />
+            <div className="proyecto-gallery-caption">Acceso principal</div>
+          </Reveal>
+          <Reveal variant="scale" delay={160} className="proyecto-gallery-item">
+            <img
+              src={projectImages.lobby}
+              alt="Lobby de acceso de Gran Alto"
+              loading="lazy"
+              style={{ objectFit: "cover" }}
+            />
+            <div className="proyecto-gallery-caption">Lobby de acceso</div>
+          </Reveal>
         </div>
       </div>
     </section>

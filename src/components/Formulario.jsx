@@ -1,44 +1,17 @@
-import { useEffect, useState } from "react";
-import { projectConfig, SITE } from "../lib/config";
-import { Eyebrow, Reveal, ArrowIcon, WhatsAppIcon } from "./ui";
+import { useEffect, useRef } from "react";
+import { Eyebrow, Reveal } from "./ui";
 
-const TIPOLOGIAS = [
-  "Tipología A · 107 m²",
-  "Tipología B · 93 m²",
-  "Tipología C · 90 m²",
-  "Necesito asesoramiento",
-];
-
-export default function Formulario({ preselect = {} }) {
-  const [form, setForm] = useState({
-    nombre: "",
-    telefono: "",
-    email: "",
-    interes: "Vivir",
-    tipologia: "Necesito asesoramiento",
-    contacto: "WhatsApp",
-  });
-  const [sent, setSent] = useState(false);
+export default function Formulario() {
+  const scriptRef = useRef(null);
 
   useEffect(() => {
-    if (preselect.interest) setForm((f) => ({ ...f, interes: preselect.interest }));
-    if (preselect.typology) {
-      const match = TIPOLOGIAS.find((t) => t.includes(preselect.typology.replace("Tipología ", "")));
-      if (match) setForm((f) => ({ ...f, tipologia: match }));
-    }
-  }, [preselect]);
-
-  const update = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
-
-  const submit = (e) => {
-    e.preventDefault();
-    setSent(true);
-    window.trackEvent?.({ event: "form_submit" });
-  };
-
-  const handleFocus = () => {
-    window.trackEvent?.({ event: "form_start" });
-  };
+    if (scriptRef.current) return;
+    const script = document.createElement("script");
+    script.src = "https://link.msgsndr.com/js/form_embed.js";
+    script.async = true;
+    document.body.appendChild(script);
+    scriptRef.current = script;
+  }, []);
 
   const benefits = [
     "Información de tipologías y superficies.",
@@ -76,123 +49,23 @@ export default function Formulario({ preselect = {} }) {
 
           <Reveal variant="right">
             <div className="form-card">
-              {sent ? (
-                <div className="form-success">
-                  <div className="big">Recibimos tu consulta</div>
-                  <p>
-                    Un asesor de Gran Alto se pondrá en contacto con vos.
-                  </p>
-                  {projectConfig.whatsappNumber && (
-                    <a
-                      className="btn btn-primary"
-                      href={SITE.whatsappUrl(
-                        form.interes === "Invertir" ? SITE.whatsappInversion : SITE.whatsappGeneral
-                      )}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <WhatsAppIcon size={18} /> Continuar por WhatsApp
-                    </a>
-                  )}
-                </div>
-              ) : (
-                <form onSubmit={submit} onFocus={handleFocus}>
-                  <div className="form-row">
-                    <div className="field">
-                      <label htmlFor="f-nombre">Nombre y apellido</label>
-                      <input
-                        id="f-nombre"
-                        type="text"
-                        required
-                        value={form.nombre}
-                        onChange={update("nombre")}
-                        placeholder="Tu nombre completo"
-                      />
-                    </div>
-                    <div className="field">
-                      <label htmlFor="f-telefono">WhatsApp o teléfono</label>
-                      <input
-                        id="f-telefono"
-                        type="tel"
-                        inputMode="tel"
-                        required
-                        value={form.telefono}
-                        onChange={update("telefono")}
-                        placeholder="+595 ..."
-                      />
-                    </div>
-                  </div>
-                  <div className="field">
-                    <label htmlFor="f-email">Correo electrónico</label>
-                    <input
-                      id="f-email"
-                      type="email"
-                      required
-                      value={form.email}
-                      onChange={update("email")}
-                      placeholder="tu@correo.com"
-                    />
-                  </div>
-
-                  <label style={{ fontSize: "0.7rem", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--color-text)" }}>
-                    ¿Qué te interesa?
-                  </label>
-                  <div className="radio-group">
-                    {["Vivir", "Invertir", "Ambas opciones"].map((o) => (
-                      <label className="radio-pill" key={o}>
-                        <input
-                          type="radio"
-                          name="interes"
-                          value={o}
-                          checked={form.interes === o}
-                          onChange={update("interes")}
-                        />
-                        <span>{o}</span>
-                      </label>
-                    ))}
-                  </div>
-
-                  <div className="field">
-                    <label htmlFor="f-tipo">Tipología de interés</label>
-                    <select id="f-tipo" value={form.tipologia} onChange={update("tipologia")}>
-                      {TIPOLOGIAS.map((t) => (
-                        <option key={t} value={t}>{t}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <label style={{ fontSize: "0.7rem", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--color-text)" }}>
-                    ¿Cómo preferís que te contactemos?
-                  </label>
-                  <div className="radio-group">
-                    {["WhatsApp", "Llamada", "Correo electrónico"].map((o) => (
-                      <label className="radio-pill" key={o}>
-                        <input
-                          type="radio"
-                          name="contacto"
-                          value={o}
-                          checked={form.contacto === o}
-                          onChange={update("contacto")}
-                        />
-                        <span>{o}</span>
-                      </label>
-                    ))}
-                  </div>
-
-                  <button className="btn btn-primary" style={{ width: "100%", marginTop: "0.3rem" }} type="submit">
-                    Solicitar información <ArrowIcon />
-                  </button>
-                  <p className="form-note">
-                    Al enviar el formulario, aceptás que el equipo de Gran Alto
-                    se contacte con vos para brindarte información sobre el
-                    proyecto y declarás haber leído la Política de Privacidad.
-                  </p>
-
-                  {!projectConfig.formEndpoint && (
-                    <p className="form-pending">Integración de formulario pendiente</p>
-                  )}
-                </form>
-              )}
+              <iframe
+                src="https://api.leadconnectorhq.com/widget/form/MiylABsNIv4L2JPDBWTi"
+                style={{ width: "100%", height: "100%", border: "none", borderRadius: "8px", minHeight: "600px" }}
+                id="inline-MiylABsNIv4L2JPDBWTi"
+                data-layout='{"id":"INLINE"}'
+                data-trigger-type="alwaysShow"
+                data-trigger-value=""
+                data-activation-type="alwaysActivated"
+                data-activation-value=""
+                data-deactivation-type="neverDeactivate"
+                data-deactivation-value=""
+                data-form-name="Formulario Gran Alto"
+                data-height="undefined"
+                data-layout-iframe-id="inline-MiylABsNIv4L2JPDBWTi"
+                data-form-id="MiylABsNIv4L2JPDBWTi"
+                title="Formulario Gran Alto"
+              />
             </div>
           </Reveal>
         </div>

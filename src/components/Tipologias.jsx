@@ -124,6 +124,7 @@ export default function Tipologias({ onCta }) {
                 slotId={tipo.renderSlot}
                 alt={`Interior de la ${tipo.name}`}
                 aspectRatio="16:9"
+                imgStyle={{ objectFit: "cover" }}
               />
               <span className="tipo-badge">{tipo.name}</span>
             </Reveal>
@@ -180,6 +181,7 @@ export default function Tipologias({ onCta }) {
 
       {modalOpen && (
         <ImageModal
+          src={null}
           isOpen={modalOpen}
           onClose={() => setModalOpen(false)}
           alt={`Plano ampliado de ${tipo.name}`}

@@ -1,4 +1,5 @@
 import { Eyebrow, Reveal, ProjectImage } from "./ui";
+import { projectImages } from "../lib/images";
 
 const AMENITIES = [
   {
@@ -42,6 +43,20 @@ export default function Amenities() {
             Espacios para encontrarse, entrenar, descansar y disfrutar de la
             ciudad desde una nueva perspectiva.
           </p>
+        </Reveal>
+
+        {/* Vista panorámica general */}
+        <Reveal>
+          <div className="amenities-panoramic">
+            <img
+              src={projectImages.amenitiesGeneral}
+              alt="Vista general de la azotea con parrilla, estar y piscina"
+              loading="lazy"
+              style={{ objectFit: "cover" }}
+            />
+            <div className="overlay" />
+            <div className="caption">Amenities en la azotea</div>
+          </div>
         </Reveal>
 
         <div className="amenities-grid">

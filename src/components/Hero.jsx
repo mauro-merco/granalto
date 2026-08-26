@@ -29,7 +29,8 @@ export default function Hero({ onCta }) {
           slotId="hero-edificio-gran-alto"
           alt="Vista aérea o fachada del edificio Gran Alto en Las Mercedes"
           priority
-          imgStyle={{ objectFit: "cover" }}
+          objectPosition="center 55%"
+          imgStyle={{ objectFit: "cover", objectPosition: "center 55%" }}
         />
       </div>
       <div className="hero-veil" />
