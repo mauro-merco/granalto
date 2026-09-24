@@ -4,7 +4,7 @@ import { Eyebrow, Reveal } from "./ui";
 const FAQS = [
   {
     q: "¿Dónde está ubicado Gran Alto?",
-    a: "Gran Alto está ubicado en José Berges 1411, en Las Mercedes, Asunción. La dirección debe validarse antes de la publicación definitiva.",
+    a: "Gran Alto está ubicado en José Berges 1411, en Las Mercedes, Asunción.",
   },
   {
     q: "¿Qué tipologías de departamentos ofrece?",

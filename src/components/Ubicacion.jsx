@@ -20,9 +20,6 @@ export default function Ubicacion() {
             <p className="lead">
               {projectConfig.address}
             </p>
-            {!projectConfig.addressValidated && (
-              <span className="ubi-validation">DATO A VALIDAR ANTES DE PUBLICAR</span>
-            )}
           </div>
         </Reveal>
 

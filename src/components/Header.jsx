@@ -88,7 +88,7 @@ export default function Header({ onCta, minimal = false }) {
           <button
             className={`burger${open ? " is-open" : ""}`}
             onClick={() => setOpen((v) => !v)}
-            aria-label="Abrir menú"
+            aria-label={open ? "Cerrar menú" : "Abrir menú"}
             aria-expanded={open}
           >
             <span />

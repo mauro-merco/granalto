@@ -92,7 +92,7 @@ export default function Amenities() {
               key={a.title}
               variant="scale"
               delay={(AMENITIES_WITH_IMG.length + i) * 60}
-              className={`amenity-card amenity-card--text${a.variant === "solid" ? " amenity-card--solid" : ""}`}
+              className={`amenity-card amenity-card--text amenity-card--${a.variant}`}
             >
               <div className="amenity-text-inner">
                 <span className="amenity-num">{a.num}</span>

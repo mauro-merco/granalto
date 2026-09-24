@@ -567,9 +567,9 @@ button {
    ============================================================ */
 .hero {
   position: relative;
-  height: 760px;
+  min-height: max(860px, 100svh);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   color: #fff;
   background: #111;
   overflow: hidden;
@@ -611,7 +611,7 @@ button {
   z-index: 3;
   width: min(var(--container), 92%);
   margin-inline: auto;
-  padding-bottom: clamp(3rem, 6vw, 5rem);
+  padding-block: 7rem 3rem;
   max-width: 760px;
   margin-right: auto;
 }
@@ -1105,12 +1105,12 @@ button {
 
 .amenity-card--outline {
   background: var(--color-surface);
-  color: var(--color-text);
+  color: var(--color-brand);
   border: 1px solid var(--color-border);
 }
 
 .amenity-card--outline .amenity-num {
-  color: var(--color-border);
+  color: var(--color-brand);
 }
 
 .amenity-num {
@@ -1223,18 +1223,6 @@ button {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-text-muted);
-}
-
-.ubi-validation {
-  display: inline-block;
-  margin-top: 0.5rem;
-  padding: 0.3rem 0.7rem;
-  border-radius: var(--radius-button);
-  background: #FFF3CD;
-  color: #856404;
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
 }
 
 .ubi-editorial-list {
@@ -1734,18 +1722,6 @@ button {
   color: #fff;
 }
 
-.footer-validation {
-  display: inline-block;
-  margin-top: 0.4rem;
-  padding: 0.2rem 0.5rem;
-  border-radius: 3px;
-  background: rgba(255, 193, 7, 0.15);
-  color: #ffc107;
-  font-size: 0.62rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-}
-
 .footer-bottom {
   display: flex;
   justify-content: space-between;
@@ -1909,10 +1885,16 @@ button {
     justify-content: space-between;
   }
 
-  .header-logo {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+  .header:not(.header--minimal) .header-logo {
+    position: static;
+    transform: none;
+    align-items: flex-start;
+  }
+
+  .header:not(.header--minimal) .header-inner > .header-nav,
+  .header:not(.header--minimal) .header-cta .header-nav,
+  .header:not(.header--minimal) .header-cta > .btn {
+    display: none;
   }
 
   .header-cta {
@@ -1988,12 +1970,46 @@ button {
   }
 
   .hero {
-    height: 680px;
-    align-items: flex-end;
+    min-height: max(760px, 100svh);
+  }
+
+  .hero-inner {
+    padding-block: 6rem 2.5rem;
+  }
+
+  .hero-title {
+    font-size: clamp(2.6rem, 12vw, 3.8rem);
+    line-height: 1.02;
+  }
+
+  .hero-sub {
+    margin-top: 1.1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .hero-actions {
+    margin-top: 1.5rem;
   }
 
   .hero-meta {
-    gap: 0.8rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .hero-meta-item {
+    display: block;
+  }
+
+  .hero-meta-item b,
+  .hero-meta-item span {
+    display: block;
+  }
+
+  .hero-meta-item span {
+    margin-top: 0.1rem;
   }
 
   .hero-meta-divider {
@@ -2109,7 +2125,7 @@ button {
 
 @media (max-width: 480px) {
   .hero {
-    height: 620px;
+    min-height: max(720px, 100svh);
   }
 
   .hero-actions {
@@ -2118,6 +2134,12 @@ button {
 
   .hero-actions .btn {
     width: 100%;
+  }
+
+  .hero-tag {
+    max-width: 28ch;
+    margin-bottom: 1rem;
+    line-height: 1.6;
   }
 
   .cierre-split {

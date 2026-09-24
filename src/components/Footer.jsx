@@ -30,9 +30,6 @@ export default function Footer() {
             <ul>
               <li>
                 {projectConfig.address}
-                {!projectConfig.addressValidated && (
-                  <span className="footer-validation">DATO A VALIDAR</span>
-                )}
               </li>
               {hasWhatsapp && (
                 <li>

@@ -12,9 +12,6 @@ export default function FooterContacto() {
 
           <div className="footer-contacto-info">
             <p>{projectConfig.address}</p>
-            {!projectConfig.addressValidated && (
-              <span className="footer-validation">DATO A VALIDAR</span>
-            )}
           </div>
         </div>
 

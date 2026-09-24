@@ -3,9 +3,8 @@ import logoImg from "../imgs/logo.JPG";
 export const projectConfig = {
   publicationReady: false,
   address: "José Berges 1411, Asunción",
-  addressValidated: false,
   googleMapsUrl: "",
-  whatsappNumber: "",
+  whatsappNumber: "595993583943",
   commercialEmail: "",
   instagramUrl: "",
   privacyUrl: "",
